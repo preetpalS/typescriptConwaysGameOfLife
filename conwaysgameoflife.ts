@@ -47,15 +47,14 @@ var firstInitializationArray = [
     [d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d]
 ]
 
-
 // Blinker
 /*
 var firstInitializationArray = [
-    [false, false, false, false, false],
-    [false, false, false, false, false],
-    [false, true, true, true, false],
-    [false, false, false, false, false],
-    [false, false, false, false, false]
+    [false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false],
+    [false, false, true, true, true, false, false],
+    [false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false]
 ];
 */
 
@@ -67,23 +66,20 @@ function init() {
 class ConwaysGameOfLife {
     private arrayA: bool[][];
     private arrayB: bool[][];
-    private gameCanvas: HTMLCanvasElement;
     private isArrayATheCurrentArray: bool;
-    private aliveCellColor: string;
-    private deadCellColor: string;
     private numberOfRows: number;
     private numberOfColumns: number;
 
-    constructor(initializationArray: bool[][], canvas: HTMLCanvasElement, aliveColor: string, deadColor: string) {
+    constructor(initializationArray: bool[][], private gameCanvas: HTMLCanvasElement, private aliveCellColor: string, private deadCellColor: string) {
         if (initializationArray.length < 2 && initializationArray[0].length < 2) {
             throw RangeException;
         } else {
             var isInitializationArrayRectangleP = true;
-            var m = initializationArray.length;
-            var n = initializationArray[0].length;
+            this.numberOfRows = firstInitializationArray.length;
+            this.numberOfColumns = firstInitializationArray[0].length;
 
-            for (var i = 0; i < m; ++i) {
-                if (initializationArray[i].length !== n) {
+            for (var i = 0; i < this.numberOfRows; ++i) {
+                if (initializationArray[i].length !== this.numberOfColumns) {
                     isInitializationArrayRectangleP = false;
                     break;
                 }
@@ -94,29 +90,26 @@ class ConwaysGameOfLife {
             } else {
                 this.arrayA = <bool[][]>JSON.parse(JSON.stringify(initializationArray));
                 this.arrayB = <bool[][]>JSON.parse(JSON.stringify(this.arrayA));
-                this.gameCanvas = canvas;
                 this.isArrayATheCurrentArray = true;
-                this.aliveCellColor = aliveColor;
-                this.deadCellColor = deadColor;
-                this.numberOfRows = firstInitializationArray.length;
-                this.numberOfColumns = firstInitializationArray[0].length;
+                this.gameCanvas.height = 25 * this.numberOfRows;
+                this.gameCanvas.width = 25 * this.numberOfColumns;
             }
         }
     }
 
-    private isPointXYInRangeAndValid(x: number, y: number) {
-        if (x < 0 || x >= this.numberOfColumns) {
+    private isPointXYInRangeAndValid(x: number, y: number): bool {
+        if (x < 0 || x >= this.numberOfRows) {
             return false;
         } else {
-            if (y < 0 || y >= this.numberOfRows) {
+            if (y < 0 || y >= this.numberOfColumns) {
                 return false;
             } else {
                 return true;
             }
         }
     }
-    private getNumberOfAliveElementsAroundPointXYInCurrentArray(x: number, y: number) {
-        // x and y are 0-index based
+    private getNumberOfAliveElementsAroundPointXYInCurrentArray(x: number, y: number): number {
+        // x and y are 0-index based where x represents the row index, y represents the column index
         var count = 0;
         var currentArray = this.isArrayATheCurrentArray ? this.arrayA : this.arrayB;
 
@@ -137,8 +130,8 @@ class ConwaysGameOfLife {
         var currentArray = this.isArrayATheCurrentArray ? this.arrayA : this.arrayB;
         var nonCurrentArray = (!this.isArrayATheCurrentArray) ? this.arrayA : this.arrayB;
 
-        for (var i = 0; i < this.arrayA.length; ++i) {
-            for (var j = 0; j < this.arrayA[0].length; ++j) {
+        for (var i = 0; i < this.numberOfRows; ++i) {
+            for (var j = 0; j < this.numberOfColumns; ++j) {
                 var numberOfAliveNeighbours = this.getNumberOfAliveElementsAroundPointXYInCurrentArray(i, j);
                 var isCellAlive = currentArray[i][j];
 
@@ -174,22 +167,20 @@ class ConwaysGameOfLife {
         var currentArray = this.isArrayATheCurrentArray ? this.arrayA : this.arrayB;
         var boardHeight = gameCanvas.height;
         var boardWidth = gameCanvas.width;
-        var m = currentArray.length;
-        var n = currentArray[0].length;
-        var boardPieceHeight = boardHeight / m;
-        var boardPieceWidth = boardWidth / n;
+        var boardPieceWidth = boardWidth / this.numberOfColumns;
+        var boardPieceHeight = boardHeight / this.numberOfRows;
 
         var y = 0;
-        for (var i = 0; i < n; ++i) {
+        for (var i = 0; i < this.numberOfRows; ++i) {
             var x = 0;
 
-            for (var j = 0; j < m; ++j) {
+            for (var j = 0; j < this.numberOfColumns; ++j) {
                 var currentColor = (currentArray[i][j]) ? this.aliveCellColor : this.deadCellColor;
                 this.drawCell(x, y, boardPieceWidth, boardPieceHeight, currentColor);
-                x += boardPieceHeight;
+                x += boardPieceWidth;
             }
 
-            y += boardPieceWidth;
+            y += boardPieceHeight;
         }
     }
 

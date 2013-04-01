@@ -1689,15 +1689,18 @@ function init() {
     game.run();
 }
 var ConwaysGameOfLife = (function () {
-    function ConwaysGameOfLife(initializationArray, canvas, aliveColor, deadColor) {
+    function ConwaysGameOfLife(initializationArray, gameCanvas, aliveCellColor, deadCellColor) {
+        this.gameCanvas = gameCanvas;
+        this.aliveCellColor = aliveCellColor;
+        this.deadCellColor = deadCellColor;
         if(initializationArray.length < 2 && initializationArray[0].length < 2) {
             throw RangeException;
         } else {
             var isInitializationArrayRectangleP = true;
-            var m = initializationArray.length;
-            var n = initializationArray[0].length;
-            for(var i = 0; i < m; ++i) {
-                if(initializationArray[i].length !== n) {
+            this.numberOfRows = firstInitializationArray.length;
+            this.numberOfColumns = firstInitializationArray[0].length;
+            for(var i = 0; i < this.numberOfRows; ++i) {
+                if(initializationArray[i].length !== this.numberOfColumns) {
                     isInitializationArrayRectangleP = false;
                     break;
                 }
@@ -1707,20 +1710,17 @@ var ConwaysGameOfLife = (function () {
             } else {
                 this.arrayA = JSON.parse(JSON.stringify(initializationArray));
                 this.arrayB = JSON.parse(JSON.stringify(this.arrayA));
-                this.gameCanvas = canvas;
                 this.isArrayATheCurrentArray = true;
-                this.aliveCellColor = aliveColor;
-                this.deadCellColor = deadColor;
-                this.numberOfRows = firstInitializationArray.length;
-                this.numberOfColumns = firstInitializationArray[0].length;
+                this.gameCanvas.height = 25 * this.numberOfRows;
+                this.gameCanvas.width = 25 * this.numberOfColumns;
             }
         }
     }
     ConwaysGameOfLife.prototype.isPointXYInRangeAndValid = function (x, y) {
-        if(x < 0 || x >= this.numberOfColumns) {
+        if(x < 0 || x >= this.numberOfRows) {
             return false;
         } else {
-            if(y < 0 || y >= this.numberOfRows) {
+            if(y < 0 || y >= this.numberOfColumns) {
                 return false;
             } else {
                 return true;
@@ -1744,8 +1744,8 @@ var ConwaysGameOfLife = (function () {
     ConwaysGameOfLife.prototype.updateNonCurrentArrayAndSetAsCurrentArray = function () {
         var currentArray = this.isArrayATheCurrentArray ? this.arrayA : this.arrayB;
         var nonCurrentArray = (!this.isArrayATheCurrentArray) ? this.arrayA : this.arrayB;
-        for(var i = 0; i < this.arrayA.length; ++i) {
-            for(var j = 0; j < this.arrayA[0].length; ++j) {
+        for(var i = 0; i < this.numberOfRows; ++i) {
+            for(var j = 0; j < this.numberOfColumns; ++j) {
                 var numberOfAliveNeighbours = this.getNumberOfAliveElementsAroundPointXYInCurrentArray(i, j);
                 var isCellAlive = currentArray[i][j];
                 if(isCellAlive) {
@@ -1776,19 +1776,17 @@ var ConwaysGameOfLife = (function () {
         var currentArray = this.isArrayATheCurrentArray ? this.arrayA : this.arrayB;
         var boardHeight = gameCanvas.height;
         var boardWidth = gameCanvas.width;
-        var m = currentArray.length;
-        var n = currentArray[0].length;
-        var boardPieceHeight = boardHeight / m;
-        var boardPieceWidth = boardWidth / n;
+        var boardPieceWidth = boardWidth / this.numberOfColumns;
+        var boardPieceHeight = boardHeight / this.numberOfRows;
         var y = 0;
-        for(var i = 0; i < n; ++i) {
+        for(var i = 0; i < this.numberOfRows; ++i) {
             var x = 0;
-            for(var j = 0; j < m; ++j) {
+            for(var j = 0; j < this.numberOfColumns; ++j) {
                 var currentColor = (currentArray[i][j]) ? this.aliveCellColor : this.deadCellColor;
                 this.drawCell(x, y, boardPieceWidth, boardPieceHeight, currentColor);
-                x += boardPieceHeight;
+                x += boardPieceWidth;
             }
-            y += boardPieceWidth;
+            y += boardPieceHeight;
         }
     };
     ConwaysGameOfLife.prototype.gameLoop = function () {
