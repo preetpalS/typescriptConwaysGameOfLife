@@ -64,13 +64,13 @@ function init() {
 }
 
 class ConwaysGameOfLife {
-    private arrayA: bool[][];
-    private arrayB: bool[][];
-    private isArrayATheCurrentArray: bool;
+    private arrayA: boolean[][];
+    private arrayB: boolean[][];
+    private isArrayATheCurrentArray: boolean;
     private numberOfRows: number;
     private numberOfColumns: number;
 
-    constructor(initializationArray: bool[][], private gameCanvas: HTMLCanvasElement, private aliveCellColor: string, private deadCellColor: string) {
+    constructor(initializationArray: boolean[][], private gameCanvas: HTMLCanvasElement, private aliveCellColor: string, private deadCellColor: string) {
         if (initializationArray.length < 2 && initializationArray[0].length < 2) {
             throw RangeException;
         } else {
@@ -88,8 +88,8 @@ class ConwaysGameOfLife {
             if (!isInitializationArrayRectangleP) {
                 throw RangeException;
             } else {
-                this.arrayA = <bool[][]>JSON.parse(JSON.stringify(initializationArray));
-                this.arrayB = <bool[][]>JSON.parse(JSON.stringify(this.arrayA));
+                this.arrayA = <boolean[][]>JSON.parse(JSON.stringify(initializationArray));
+                this.arrayB = <boolean[][]>JSON.parse(JSON.stringify(this.arrayA));
                 this.isArrayATheCurrentArray = true;
                 this.gameCanvas.height = 25 * this.numberOfRows;
                 this.gameCanvas.width = 25 * this.numberOfColumns;
@@ -97,7 +97,7 @@ class ConwaysGameOfLife {
         }
     }
 
-    private isPointXYInRangeAndValid(x: number, y: number): bool {
+    private isPointXYInRangeAndValid(x: number, y: number): boolean {
         if (x < 0 || x >= this.numberOfRows) {
             return false;
         } else {
