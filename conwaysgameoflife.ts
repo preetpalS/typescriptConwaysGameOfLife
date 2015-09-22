@@ -72,7 +72,7 @@ class ConwaysGameOfLife {
 
     constructor(initializationArray: boolean[][], private gameCanvas: HTMLCanvasElement, private aliveCellColor: string, private deadCellColor: string) {
         if (initializationArray.length < 2 && initializationArray[0].length < 2) {
-            throw RangeException;
+            throw new RangeError();
         } else {
             var isInitializationArrayRectangleP = true;
             this.numberOfRows = firstInitializationArray.length;
@@ -86,13 +86,13 @@ class ConwaysGameOfLife {
             }
 
             if (!isInitializationArrayRectangleP) {
-                throw RangeException;
+                throw new RangeError();
             } else {
                 this.arrayA = <boolean[][]>JSON.parse(JSON.stringify(initializationArray));
                 this.arrayB = <boolean[][]>JSON.parse(JSON.stringify(this.arrayA));
                 this.isArrayATheCurrentArray = true;
-                this.gameCanvas.height = 25 * this.numberOfRows;
-                this.gameCanvas.width = 25 * this.numberOfColumns;
+                this.gameCanvas.height = 10 * this.numberOfRows;
+                this.gameCanvas.width = 10 * this.numberOfColumns;
             }
         }
     }

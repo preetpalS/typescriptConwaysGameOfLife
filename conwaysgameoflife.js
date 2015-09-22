@@ -65,7 +65,7 @@ var ConwaysGameOfLife = (function () {
         this.aliveCellColor = aliveCellColor;
         this.deadCellColor = deadCellColor;
         if (initializationArray.length < 2 && initializationArray[0].length < 2) {
-            throw RangeException;
+            throw new RangeError();
         }
         else {
             var isInitializationArrayRectangleP = true;
@@ -78,14 +78,14 @@ var ConwaysGameOfLife = (function () {
                 }
             }
             if (!isInitializationArrayRectangleP) {
-                throw RangeException;
+                throw new RangeError();
             }
             else {
                 this.arrayA = JSON.parse(JSON.stringify(initializationArray));
                 this.arrayB = JSON.parse(JSON.stringify(this.arrayA));
                 this.isArrayATheCurrentArray = true;
-                this.gameCanvas.height = 25 * this.numberOfRows;
-                this.gameCanvas.width = 25 * this.numberOfColumns;
+                this.gameCanvas.height = 10 * this.numberOfRows;
+                this.gameCanvas.width = 10 * this.numberOfColumns;
             }
         }
     }
